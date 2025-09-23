@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block head_extra %}
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+<style type="text/tailwindcss">
+  :root {
+      --background-light: #F8F9FA;
+      --card-background-light: #FFFFFF;
+      --text-primary-light: #18181B;
+      --text-secondary-light: #6B7280;
+      --border-light: #E5E7EB;
+      --primary-accent: #3B82F6;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+    }
+  </style>
+{% endblock head_extra %}
+
+{% block content %}
+<main class="flex-grow">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+    <div class="max-w-3xl mx-auto text-center mb-12 md:mb-16">
+      <h1 class="text-4xl font-bold tracking-tight text-text-primary sm:text-5xl lg:text-6xl">Works</h1>
+      <p class="mt-4 text-lg text-text-secondary">これまでに作った作品や取り組みをまとめています。気軽に覗いてみてください。</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {% for item in object_list %}
+      <a class="group block bg-card-background border border-border-light rounded-xl overflow-hidden shadow-subtle hover:shadow-subtle-hover transition-all duration-300 ease-in-out transform hover:-translate-y-1"
+        href="{% url 'portfolio_detail' item.slug %}">
+        <div class="overflow-hidden aspect-video">
+          <img alt="E-commerce Platform Thumbnail"
+            class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+            src="{{ item.images.all.0.image.url }}" />
+        </div>
+        <div class="p-6">
+          <h3 class="text-xl font-semibold text-text-primary">{{ item.title }}</h3>
+          <p class="mt-2 text-text-secondary">{{ item.description|truncatechars:100 }}</p>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</main>
+{% endblock content %}
+
+</html>

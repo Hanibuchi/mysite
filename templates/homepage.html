@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block head_extra %}
+<link as="style" href="https://fonts.googleapis.com/css2?display=swap&amp;family=Inter%3Awght%40400%3B500%3B700%3B900"
+    onload="this.rel='stylesheet'" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+{% endblock head_extra %}
+
+{% block content %}
+{% load static %}
+<main class="flex-grow">
+    <section
+        class="relative h-[70vh] min-h-[500px] flex items-center justify-center text-center text-white overflow-hidden">
+        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat"
+            style='background-image: url("{% static "images/top.png" %}");'>
+        </div>
+        <div class="absolute inset-0 bg-black/50"></div>
+        <div class="relative z-10 px-4">
+            <h1 class="text-4xl md:text-6xl font-bold tracking-tight">ハニテックのブログへようこそ</h1>
+            <p class="mt-4 text-lg md:text-xl max-w-4xl mx-auto">
+                作ったもの、思ったこと、調べたことなどについて自由に書いていきます。ときどき覗いてもらえたら、新しい発見があるかもしれませんし、ないかもしれません。</p>
+        </div>
+    </section>
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24">
+        <section class="mb-16 md:mb-24" id="about">
+            <div class="max-w-3xl mx-auto text-center">
+                <h2 class="text-3xl font-bold tracking-tight text-text-main sm:text-4xl mb-4">ハニテックについて</h2>
+                <p class="text-lg text-text-light">ゲーム好きが高じて、Unityでのゲーム制作を開始。その後、Djangoを使ったWeb開発に移行。
+                    開発におけるモットーは、「まず動くこと」。以前の設計重視の考え方から転換し、より実用的なアプローチを実践。
+                </p>
+            </div>
+        </section>
+        <section class="mb-16 md:mb-24" id="portfolio">
+            <h2 class="text-3xl font-bold tracking-tight text-text-main sm:text-4xl mb-8 text-center">Works
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-8">
+                {% for item in latest_portfolios %}
+                <a href="{% url 'portfolio_detail' item.slug %}"
+                    class="bg-white rounded-xl shadow-md overflow-hidden group transition-all duration-300 hover:shadow-xl">
+                    <div class="w-full h-64 bg-cover bg-center overflow-hidden"><img alt="Portfolio project thumbnail"
+                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            src={{ item.images.all.0.image.url }} />
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-text-main mb-2">{{ item.title }}</h3>
+                        <p class="text-text-light">{{ item.description }}</p>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+            <div class="text-center mt-12">
+                <a class="text-primary font-medium hover:underline" href="{% url 'portfolio_list' %}">一覧へ</a>
+            </div>
+        </section>
+        <section id="blog">
+            <h2 class="text-3xl font-bold tracking-tight text-text-main sm:text-4xl mb-8 text-center">Latest Blog Posts
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {% for item in latest_blogs %}
+                <a href="{% url 'blog_detail' item.slug %}"
+                    class="bg-white rounded-xl shadow-md overflow-hidden flex flex-col group transition-all duration-300 hover:shadow-xl">
+                    <div class="w-full h-48 bg-cover bg-center overflow-hidden"><img alt="Blog post thumbnail"
+                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            src="{{ item.thumbnail.url }}" />
+                    </div>
+                    <div class="p-6 flex-grow flex flex-col">
+                        <p class="text-sm text-gray-500 mb-2">{{ item.updated_at|date:"F j, Y" }}</p>
+                        <h3 class="text-xl font-semibold text-text-main mb-2">{{ item.title }}
+                        </h3>
+                        <p class="text-text-light flex-grow">{{ item.content|truncatechars:100 }}</p>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+            <div class="text-center mt-12">
+                <a class="text-primary font-medium hover:underline" href="{% url 'blog_list' %}">一覧へ</a>
+            </div>
+        </section>
+    </div>
+</main>
+<script>
+    const menuButton = document.getElementById('menu-button');
+    const closeButton = document.getElementById('close-button');
+    const globalNav = document.getElementById('global-nav');
+    menuButton.addEventListener('click', () => {
+        globalNav.classList.remove('hidden');
+        globalNav.classList.add('flex');
+    });
+    closeButton.addEventListener('click', () => {
+        globalNav.classList.add('hidden');
+        globalNav.classList.remove('flex');
+    });
+    globalNav.addEventListener('click', (e) => {
+        if (e.target.tagName === 'A') {
+            globalNav.classList.add('hidden');
+            globalNav.classList.remove('flex');
+        }
+    });
+</script>
+{% endblock content %}

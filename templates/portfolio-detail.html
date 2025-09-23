@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+
+{% block head_extra %}
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+<style>
+    .material-symbols-outlined {
+        font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+    }
+</style>
+{% endblock head_extra %}
+
+{% block content %}
+<main class="flex-grow">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16">
+        <div class="max-w-4xl mx-auto">
+            <div class="mb-8">
+                <a class="inline-flex items-center gap-1.5 text-primary font-medium hover:underline"
+                    href="{% url 'portfolio_list' %}">
+                    <span class="material-symbols-outlined text-xl">arrow_back</span>
+                    <span>Worksへ戻る</span>
+                </a>
+            </div>
+            <h1 class="text-3xl md:text-5xl font-bold text-text-light-primary mb-2">{{ object.title }}
+            </h1>
+            <p class="text-lg md:text-xl text-text-light-secondary mb-8">{{ object.description }}</p>
+            <div class="mb-12 rounded-xl overflow-hidden shadow-lg border border-border-light">
+                <div class="aspect-video bg-gray-200">
+                    <img alt="Project main image" class="w-full h-full object-cover"
+                        src="{{ object.images.all.0.image.url }}" />
+                </div>
+                <div class="grid grid-cols-3 gap-0.5">
+                    {% for image in object.images.all %}
+                    <div class="aspect-square bg-gray-100">
+                        <img alt="Project detail image" class="w-full h-full object-cover"
+                            src="{{ image.image.url }}" />
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                <div class="md:col-span-2">
+                    <h2 class="text-2xl font-bold text-text-light-primary mb-4 border-b border-border-light pb-2">
+                        この作品について</h2>
+                    <div class="prose prose-lg max-w-none text-text-light-secondary space-y-4">
+                        {{ object.detailed_description|linebreaks }}
+                    </div>
+                </div>
+                <div class="space-y-8">
+                    <div>
+                        <h3 class="text-xl font-bold text-text-light-primary mb-3">技術スタック</h3>
+                        <div class="flex flex-wrap gap-2">
+                            <span
+                                class="bg-blue-100 text-blue-800 text-sm font-medium px-2.5 py-1 rounded-full">Next.js</span>
+                            <span
+                                class="bg-green-100 text-green-800 text-sm font-medium px-2.5 py-1 rounded-full">TypeScript</span>
+                            <span class="bg-sky-100 text-sky-800 text-sm font-medium px-2.5 py-1 rounded-full">Tailwind
+                                CSS</span>
+                            <span
+                                class="bg-gray-200 text-gray-800 text-sm font-medium px-2.5 py-1 rounded-full">GraphQL</span>
+                            <span
+                                class="bg-indigo-100 text-indigo-800 text-sm font-medium px-2.5 py-1 rounded-full">Shopify
+                                API</span>
+                        </div>
+                    </div>
+                    {% if object.live_site_url %}
+                    <div>
+                        <h3 class="text-xl font-bold text-text-light-primary mb-3">公開先リンク
+                        </h3>
+                        <a class="w-full inline-flex items-center justify-center px-4 py-2.5 border border-transparent text-base font-medium rounded-lg shadow-sm text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors"
+                            href="{{ object.live_site_url }}">
+                            この作品を見る
+                            <span class="material-symbols-outlined ml-2 text-lg">open_in_new</span>
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            {% if object.blog_post %}
+            <div class="mt-16 pt-10 border-t border-border-light">
+                <h2 class="text-2xl md:text-3xl font-bold text-text-light-primary mb-6">Development Story</h2>
+                <a class="block bg-white rounded-xl shadow-md overflow-hidden border border-border-light hover:shadow-lg transition-shadow"
+                    href="{% url 'blog_detail' object.blog_post.slug %}">
+                    <div class="md:flex">
+                        <div class="md:flex-shrink-0">
+                            <img alt="Blog post thumbnail" class="h-48 w-full object-cover md:h-full md:w-56"
+                                src="{{ object.blog_post.thumbnail.url }}" />
+                        </div>
+                        <div class="p-6 flex flex-col justify-between">
+                            <div>
+                                <div class="uppercase tracking-wide text-sm text-primary font-semibold">Related
+                                    Blog Post</div>
+                                <div
+                                    class="block mt-1 text-lg leading-tight font-bold text-text-light-primary hover:underline">
+                                    {{ object.blog_post.title }}
+                                </div>
+                                <p class="mt-2 text-text-light-secondary">{{object.blog_post.content|truncatechars:250}}
+                                </p>
+                            </div>
+                            <div class="mt-4">
+                                <span class="inline-flex items-center text-primary font-semibold hover:underline">
+                                    Read The Full Story
+                                    <span class="material-symbols-outlined ml-1 text-lg">arrow_forward</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</main>
+<div class="hidden fixed inset-0 z-30 bg-background-light/95 backdrop-blur-md" id="mobile-menu">
+    <div class="flex flex-col items-center justify-center h-full">
+        <button class="absolute top-5 right-5 p-2 rounded-full text-text-light-secondary hover:bg-gray-100"
+            id="close-menu">
+            <span class="material-symbols-outlined text-3xl">close</span>
+        </button>
+        <nav class="flex flex-col items-center gap-8">
+            <a class="text-2xl font-medium text-text-light-primary hover:text-primary transition-colors"
+                href="#">Homepage</a>
+            <a class="text-2xl font-medium text-text-light-primary hover:text-primary transition-colors"
+                href="#">Portfolio</a>
+            <a class="text-2xl font-medium text-text-light-primary hover:text-primary transition-colors"
+                href="#">Blog</a>
+        </nav>
+    </div>
+    <script>
+        const menuButton = document.getElementById('menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const closeMenuButton = document.getElementById('close-menu');
+        menuButton.addEventListener('click', () => {
+            mobileMenu.classList.remove('hidden');
+        });
+        closeMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.add('hidden');
+        });
+    </script>
+</div>
+{% endblock content %}

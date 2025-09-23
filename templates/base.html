@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="data:image/x-icon;base64," rel="icon" type="image/x-icon" />
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+    <title>Hanitech Blog</title>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": {
+                            DEFAULT: "#007BFF",
+                            '50': '#E6F2FF',
+                            '100': '#CCE5FF',
+                            '200': '#99CBFF',
+                            '300': '#66B2FF',
+                            '400': '#3398FF',
+                            '500': '#007BFF',
+                            '600': '#0062CC',
+                            '700': '#004A99',
+                            '800': '#003166',
+                            '900': '#001933',
+                        },
+                        "background": "#F8F9FA",
+                        "surface": "#FFFFFF",
+                        "text-primary": "#212529",
+                        "text-secondary": "#6C757D",
+                        "text-light": "#64748b",
+                        "text-main": "#1e293b",
+                        "background-light": "#f8fafc", // Very light gray, almost white
+                        "background-dark": "#1e293b", // A dark slate for dark mode
+                        "text-light-primary": "#111827", // Dark gray for main text on light bg
+                        "text-light-secondary": "#4b5563", // Lighter gray for secondary text
+                        "text-dark-primary": "#f8fafc",
+                        "text-dark-secondary": "#9ca3af",
+                        "border-light": "#e5e7eb",
+                        "border-dark": "#334155",
+                    },
+                    fontFamily: {
+                        sans: ["Inter", "sans-serif"],
+                    },
+                    boxShadow: {
+                        'card': '0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05)',
+                        'card-hover': '0 10px 15px -3px rgb(0 0 0 / 0.07), 0 4px 6px -4px rgb(0 0 0 / 0.07)',
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.5rem",
+                        lg: "0.5rem",
+                        xl: "1rem",
+                        full: "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+
+    {% block head_extra %}
+    {% endblock head_extra %}
+</head>
+
+<body class="bg-background-light text-text-main font-sans antialiased">
+    <div class="flex flex-col min-h-screen">
+        {% block header %}
+        <header class="sticky top-0 z-50 bg-background-light/80 backdrop-blur-md border-b border-border-light">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex h-20 items-center justify-between">
+                    <a class="flex items-center gap-2" href="{% url 'main' %}">
+                        <span class="text-2xl font-semibold text-text-primary">ハニテックのブログ</span>
+                    </a>
+                    <nav class="hidden md:flex items-center gap-4">
+                        <a class="text-base font-medium {% if active_page == 'main' %} text-text-primary bg-gray-200 {% else %} text-text-secondary hover:text-text-primary {% endif %} transition-colors px-4 py-2 rounded-lg"
+                            href="{% url 'main' %}">Home</a>
+                        <a class="text-base font-medium {% if active_page == 'portfolio-list' %} text-text-primary bg-gray-200 {% else %} text-text-secondary hover:text-text-primary {% endif %} px-4 py-2 rounded-lg"
+                            href="{% url 'portfolio_list' %}">Works</a>
+                        <a class="text-base font-medium {% if active_page == 'blog-list' %} text-text-primary bg-gray-200 {% else %} text-text-secondary hover:text-text-primary {% endif %} transition-colors px-4 py-2 rounded-lg"
+                            href="{% url 'blog_list' %}">Blog</a>
+                    </nav>
+                    <button aria-label="Open navigation menu"
+                        class="md:hidden inline-flex items-center justify-center rounded-lg p-2 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-accent">
+                        <span class="material-symbols-outlined text-3xl text-text-primary">menu</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+        {% endblock header %}
+
+        {% block content %}
+        {% endblock content %}
+
+        {% block footer %}
+        <footer class="bg-background-light border-t border-border-light">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <p class="text-center text-sm text-text-secondary">© 2025 ハニテック. All rights reserved.</p>
+            </div>
+        </footer>
+        {% endblock footer %}
+    </div>
+</body>
+
+</html>
