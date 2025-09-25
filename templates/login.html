@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+
+{% block head_extra %}
+{% endblock head_extra %}
+
+{% block content %}
+<main class="flex flex-1 items-center justify-center py-16 sm:py-20">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="mx-auto max-w-md">
+      <div class="rounded-lg border border-gray-200/80 bg-surface p-8 shadow-card">
+        <div class="text-center">
+          <h2 class="text-2xl font-bold tracking-tight text-text-primary sm:text-3xl">ログイン</h2>
+          <p class="mt-2 text-text-secondary">アカウントにアクセスします</p>
+        </div>
+        <form class="mt-8 space-y-6">
+          <div>
+            <label class="block text-sm font-medium text-text-secondary" for="email">ユーザー名またはメールアドレス</label>
+            <div class="mt-1">
+              <input autocomplete="email"
+                class="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-primary focus:outline-none focus:ring-primary sm:text-sm"
+                id="email" name="email" required="" type="text" />
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-text-secondary" for="password">パスワード</label>
+            <div class="mt-1">
+              <input autocomplete="current-password"
+                class="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-primary focus:outline-none focus:ring-primary sm:text-sm"
+                id="password" name="password" required="" type="password" />
+            </div>
+          </div>
+          <div>
+            <button
+              class="flex w-full justify-center rounded-md border border-transparent bg-primary py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+              type="submit">ログイン</button>
+          </div>
+          <div class="flex flex-col items-center justify-center space-y-2 text-center text-sm">
+            <a class="font-medium text-primary hover:text-primary-700" href="#">パスワードを忘れた場合</a>
+            <div class="text-text-secondary">
+              <span>アカウントをお持ちでないですか？</span>
+              <a class="font-medium text-primary hover:text-primary-700" href="#">新規登録</a>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</main>
+{% endblock content %}
+
+
+
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Login - My Portfolio</title>
+  <link href="data:image/x-icon;base64," rel="icon" type="image/x-icon" />
+  <link href="https://fonts.googleapis.com" rel="preconnect" />
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <style type="text/tailwindcss">
+    @tailwind base;
+        @tailwind components;
+        @tailwind utilities;
+    </style>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            "primary": {
+              DEFAULT: "#007BFF",
+              '50': '#E6F2FF',
+              '100': '#CCE5FF',
+              '200': '#99CBFF',
+              '300': '#66B2FF',
+              '400': '#3398FF',
+              '500': '#007BFF',
+              '600': '#0062CC',
+              '700': '#004A99',
+              '800': '#003166',
+              '900': '#001933',
+            },
+            "background": "#F8F9FA",
+            "surface": "#FFFFFF",
+            "text-primary": "#212529",
+            "text-secondary": "#6C757D",
+          },
+          fontFamily: {
+            sans: ["Inter", "sans-serif"],
+          },
+          boxShadow: {
+            'card': '0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05)',
+          }
+        },
+      },
+    }
+  </script>
+</head>
+
+<body class="bg-background font-sans text-text-primary antialiased">
+  <div class="flex min-h-screen flex-col">
+    <header class="w-full border-b border-gray-200/80 bg-background/95">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex h-20 items-center justify-between">
+          <a class="flex items-center gap-2" href="#">
+            <svg class="h-8 w-8 text-primary" fill="currentColor" viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5-10-5-10 5z"></path>
+            </svg>
+            <span class="text-xl font-bold tracking-tight text-text-primary">MyPortfolio</span>
+          </a>
+          <nav class="flex items-center gap-4">
+            <a class="rounded-md px-4 py-2 text-sm font-medium text-text-secondary transition-colors hover:bg-gray-100 hover:text-primary"
+              href="#">ホームページ</a>
+            <a class="rounded-md px-4 py-2 text-sm font-medium text-text-secondary transition-colors hover:bg-gray-100 hover:text-primary"
+              href="#">ポートフォリオ</a>
+            <a class="rounded-md px-4 py-2 text-sm font-medium text-text-secondary transition-colors hover:bg-gray-100 hover:text-primary"
+              href="#">ブログ</a>
+          </nav>
+        </div>
+      </div>
+    </header>
+    <main class="flex flex-1 items-center justify-center py-16 sm:py-20">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-md">
+          <div class="rounded-lg border border-gray-200/80 bg-surface p-8 shadow-card">
+            <div class="text-center">
+              <h2 class="text-2xl font-bold tracking-tight text-text-primary sm:text-3xl">ログイン</h2>
+              <p class="mt-2 text-text-secondary">アカウントにアクセスします</p>
+            </div>
+            <form class="mt-8 space-y-6">
+              <div>
+                <label class="block text-sm font-medium text-text-secondary" for="email">ユーザー名またはメールアドレス</label>
+                <div class="mt-1">
+                  <input autocomplete="email"
+                    class="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-primary focus:outline-none focus:ring-primary sm:text-sm"
+                    id="email" name="email" required="" type="text" />
+                </div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-text-secondary" for="password">パスワード</label>
+                <div class="mt-1">
+                  <input autocomplete="current-password"
+                    class="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-primary focus:outline-none focus:ring-primary sm:text-sm"
+                    id="password" name="password" required="" type="password" />
+                </div>
+              </div>
+              <div>
+                <button
+                  class="flex w-full justify-center rounded-md border border-transparent bg-primary py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                  type="submit">ログイン</button>
+              </div>
+              <div class="flex flex-col items-center justify-center space-y-2 text-center text-sm">
+                <a class="font-medium text-primary hover:text-primary-700" href="#">パスワードを忘れた場合</a>
+                <div class="text-text-secondary">
+                  <span>アカウントをお持ちでないですか？</span>
+                  <a class="font-medium text-primary hover:text-primary-700" href="#">新規登録</a>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+</body>
+
+</html>

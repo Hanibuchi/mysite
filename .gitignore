@@ -5,3 +5,4 @@ __pycache__/
 mysiteenv/
 
 media/
+local_secrets.py 
