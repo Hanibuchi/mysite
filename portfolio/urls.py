@@ -4,4 +4,5 @@ from .views import PortfolioList, PortfolioDetail
 urlpatterns = [
     path('list/', PortfolioList.as_view(), name='portfolio_list'),
     path('detail/<slug:slug>/', PortfolioDetail.as_view(), name='portfolio_detail'),
+    path('tech/<slug:tech_slug>/', PortfolioList.as_view(), name='tech_portfolio_list'), 
 ]

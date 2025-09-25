@@ -26,8 +26,14 @@
     <section class="py-16 sm:py-20">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div class="mx-auto max-w-2xl text-center">
-                <h1 class="text-4xl font-bold tracking-tight text-text-primary sm:text-5xl">Blog Posts</h1>
-                <p class="mt-4 text-lg text-text-secondary">思ったこと、調べたこと、試してみたことを記録しています。小さな発見や学びを、ゆるく書き残していくつもりです。気軽に覗いてみてください。</p>
+                <h1 class="text-4xl font-bold tracking-tight text-text-primary sm:text-5xl">{% if tag %}
+                    Blog Posts: {{ tag.name }}
+                    {% else %}
+                    Blog Posts
+                    {% endif %}
+                </h1>
+                <p class="mt-4 text-lg text-text-secondary">
+                    思ったこと、調べたこと、試してみたことを記録しています。小さな発見や学びを、ゆるく書き残していくつもりです。気軽に覗いてみてください。</p>
             </div>
             <div class="mt-12 grid max-w-lg gap-8 sm:mt-16 md:max-w-none md:grid-cols-2 lg:grid-cols-3">
                 {% for item in object_list %}

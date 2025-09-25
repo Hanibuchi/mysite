@@ -11,16 +11,41 @@ def japanese_to_romaji(text: str) -> str:
     romaji = "-".join([item["hepburn"] for item in result])
     return romaji
 
+class TechStack(models.Model):
+    """
+    ポートフォリオに使用された技術スタックを管理するモデル
+    """
+    name = models.CharField(max_length=100, unique=True, verbose_name="技術名")
+    # スラッグフィールドを追加
+    slug = models.SlugField(max_length=100, unique=True, blank=True, verbose_name="スラッグ") 
+
+    def __str__(self):
+        return self.name
+        
+    # saveメソッドでスラッグを自動生成
+    def save(self, *args, **kwargs):
+        # スラッグが設定されていない場合、名前から自動生成する
+        if not self.slug:
+            self.slug = japanese_to_romaji(self.name)
+        super().save(*args, **kwargs)
+
 class Portfolio(models.Model):
     """
     ポートフォリオ作品のデータを管理するモデル
     """
     title = models.CharField(max_length=200, verbose_name="作品名")
-    slug = models.SlugField(max_length=200, unique=True, verbose_name="スラッグ")
+    slug = models.SlugField(max_length=200, unique=True, blank=True, verbose_name="スラッグ")
     description = models.TextField(verbose_name="概要")
     detailed_description = models.TextField(blank=True, verbose_name="詳細説明")
     video_url = models.URLField(max_length=200, blank=True, verbose_name="紹介動画URL")
     live_site_url = models.URLField(max_length=200, blank=True, verbose_name="公開先URL")
+    
+    technologies = models.ManyToManyField(
+        TechStack, 
+        blank=True, 
+        related_name='portfolios', 
+        verbose_name="技術スタック"
+    )
     
     # 関連するブログ記事へのForeignKey
     blog_post = models.ForeignKey(

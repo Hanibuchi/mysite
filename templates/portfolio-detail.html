@@ -49,17 +49,16 @@
                     <div>
                         <h3 class="text-xl font-bold text-text-light-primary mb-3">技術スタック</h3>
                         <div class="flex flex-wrap gap-2">
-                            <span
-                                class="bg-blue-100 text-blue-800 text-sm font-medium px-2.5 py-1 rounded-full">Next.js</span>
-                            <span
-                                class="bg-green-100 text-green-800 text-sm font-medium px-2.5 py-1 rounded-full">TypeScript</span>
-                            <span class="bg-sky-100 text-sky-800 text-sm font-medium px-2.5 py-1 rounded-full">Tailwind
-                                CSS</span>
-                            <span
-                                class="bg-gray-200 text-gray-800 text-sm font-medium px-2.5 py-1 rounded-full">GraphQL</span>
-                            <span
-                                class="bg-indigo-100 text-indigo-800 text-sm font-medium px-2.5 py-1 rounded-full">Shopify
-                                API</span>
+                            {% for tech in object.technologies.all %}
+                            <a href="{% url 'tech_portfolio_list' tech.slug %}"
+                               class="inline-flex items-center text-sm font-medium px-2.5 py-1 rounded-full 
+                                     bg-gray-200 text-gray-800 hover:bg-gray-300 transition-colors"
+                               title="{{ tech.name }}で他の作品を検索">
+                                {{ tech.name }}
+                            </a>
+                            {% empty %}
+                            <p class="text-text-light-secondary text-sm">技術スタックは登録されていません。</p>
+                            {% endfor %}
                         </div>
                     </div>
                     {% if object.live_site_url %}

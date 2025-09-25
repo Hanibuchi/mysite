@@ -1,7 +1,8 @@
 from django.contrib import admin
-from .models import Portfolio, PortfolioImage
+from .models import Portfolio, PortfolioImage, TechStack
 
 admin.site.register(Portfolio)
+admin.site.register(TechStack)
 
 class PortfolioImageInline(admin.TabularInline):
     model = PortfolioImage
