@@ -14,3 +14,6 @@ def main(request):
   }
   
   return render(request, 'homepage.html', context)
+
+def test(request):
+  return render(request, 'login.html')

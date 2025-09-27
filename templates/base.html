@@ -10,6 +10,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap"
         rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <title>Hanitech Blog</title>
 
     <script>
@@ -83,11 +85,40 @@
                             href="{% url 'portfolio_list' %}">Works</a>
                         <a class="text-base font-medium {% if active_page == 'blog-list' %} text-text-primary bg-gray-200 {% else %} text-text-secondary hover:text-text-primary {% endif %} transition-colors px-4 py-2 rounded-lg"
                             href="{% url 'blog_list' %}">Blog</a>
+
+                        {% if user.is_authenticated %}
+                        <div class="relative">
+                            <button id="user-menu-button" class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-text-secondary">person</span>
+                                <span class="font-medium text-text-primary">{{ user.username }}</span>
+                                <span id="dropdown-arrow"
+                                    class="material-symbols-outlined text-text-secondary transition-transform">expand_more</span>
+                            </button>
+                            <div id="user-menu"
+                                class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1 hidden">
+                                <a class="block px-4 py-2 text-sm text-text-secondary hover:bg-gray-100"
+                                    href="{% url 'password_change' %}">パスワード変更</a>
+                                <form method="post" action="{% url 'logout' %}">
+                                    {% csrf_token %}
+                                    <button type="submit"
+                                        class="block w-full text-left px-4 py-2 text-sm text-text-secondary hover:bg-gray-100 focus:outline-none">
+                                        ログアウト
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        {% else %}
+                        <a class="text-base font-medium text-text-secondary hover:text-text-primary transition-colors px-4 py-2 rounded-lg"
+                            href="{% url 'login' %}">Login</a>
+                        {% endif %}
+
                     </nav>
                     <button aria-label="Open navigation menu"
                         class="md:hidden inline-flex items-center justify-center rounded-lg p-2 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-accent">
                         <span class="material-symbols-outlined text-3xl text-text-primary">menu</span>
                     </button>
+
+
                 </div>
             </div>
         </header>
@@ -104,6 +135,59 @@
         </footer>
         {% endblock footer %}
     </div>
+
+    <script>
+        // HTMLが完全に読み込まれた後に、この中の処理を実行する
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- 1. 要素を取得する（名前とIDが一致しているか確認！） ---
+            const menuButton = document.getElementById('user-menu-button');
+            const userMenu = document.getElementById('user-menu');
+            const dropdownArrow = document.getElementById('dropdown-arrow');
+
+
+            // --- 2. ボタンにクリックされたときの動作を設定する ---
+            // menuButton がクリックされたら、(  )内の処理を実行する
+            menuButton.addEventListener('click', () => {
+
+                // --- 3. クラスを操作して表示・非表示を切り替える ---
+
+                // 💡 メニュー本体のクラス操作
+                // .toggle('hidden') は、
+                // hiddenクラスがあれば -> 削除（表示）
+                // hiddenクラスがなければ -> 追加（非表示） 
+                userMenu.classList.toggle('hidden');
+
+                // 💡 矢印アイコンのクラス操作
+                // .toggle('rotate-180') で、矢印を180度回転させる
+                dropdownArrow.classList.toggle('rotate-180');
+            });
+
+
+            // --- 💡 (おまけ) メニュー外をクリックしたら閉じる処理 ---
+
+            // ページ全体でのクリックを監視
+            document.addEventListener('click', (event) => {
+
+                // クリックされた要素がボタンでもメニュー内でもないか？
+                // かつ、メニューが開いている状態か？
+                const isClickedOutside = !menuButton.contains(event.target) && !userMenu.contains(event.target);
+                const isMenuOpen = !userMenu.classList.contains('hidden');
+
+                if (isClickedOutside && isMenuOpen) {
+                    // メニューを閉じる（hiddenクラスを追加）
+                    userMenu.classList.add('hidden');
+
+                    // 矢印を元に戻す
+                    dropdownArrow.classList.remove('rotate-180');
+                }
+            });
+
+        });
+    </script>
+
+    {% block extra_js %}
+    {% endblock extra_js %}
 </body>
 
 </html>
