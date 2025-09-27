@@ -54,8 +54,10 @@ class Post(models.Model):
     def total_likes(self):
         """
         記事のいいね総数を取得する
+        (Likeモデルを参照しているため、ここではリレーション名はlike_setを使用)
         """
-        return self.likes.count()
+        # LikeモデルからこのPostに関連するLikeオブジェクトの数をカウント
+        return self.like_set.count() # または self.likes.count() (related_nameによる)
 
     def __str__(self):
         return self.title
@@ -64,12 +66,12 @@ class Like(models.Model):
     """
     ユーザーのいいねを記録するモデル
     """
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="likes", verbose_name="記事")
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="ユーザー")
-    
+    post = models.ForeignKey(Post, on_delete=models.CASCADE) # デフォルトのリレーション名は post.like_set
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE) 
+
     class Meta:
-        # ユーザーが一つの記事に一度しかいいねできないようにする
+        # 一人のユーザーが一つの記事に複数いいねできないようにする制約
         unique_together = ('post', 'user')
 
     def __str__(self):
-        return f"{self.user.username} liked {self.post.title}"
+        return f'{self.user.username} likes {self.post.title}'

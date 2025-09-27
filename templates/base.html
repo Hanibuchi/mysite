@@ -78,6 +78,7 @@
                     <a class="flex items-center gap-2" href="{% url 'main' %}">
                         <span class="text-2xl font-semibold text-text-primary">ハニテックのブログ</span>
                     </a>
+
                     <nav class="hidden md:flex items-center gap-4">
                         <a class="text-base font-medium {% if active_page == 'main' %} text-text-primary bg-gray-200 {% else %} text-text-secondary hover:text-text-primary {% endif %} transition-colors px-4 py-2 rounded-lg"
                             href="{% url 'main' %}">Home</a>
@@ -113,14 +114,37 @@
                         {% endif %}
 
                     </nav>
-                    <button aria-label="Open navigation menu"
+
+                    <button id="menu-toggle-button" aria-label="Open navigation menu"
                         class="md:hidden inline-flex items-center justify-center rounded-lg p-2 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-accent">
                         <span class="material-symbols-outlined text-3xl text-text-primary">menu</span>
                     </button>
-
-
                 </div>
             </div>
+
+            <nav id="mobile-menu" class="hidden md:hidden bg-surface border-t border-border-light p-4 space-y-2">
+                <a class="block text-base font-medium {% if active_page == 'main' %} text-text-primary bg-gray-200 {% else %} text-text-secondary hover:text-text-primary {% endif %} transition-colors px-4 py-2 rounded-lg"
+                    href="{% url 'main' %}">Home</a>
+                <a class="block text-base font-medium {% if active_page == 'portfolio-list' %} text-text-primary bg-gray-200 {% else %} text-text-secondary hover:text-text-primary {% endif %} px-4 py-2 rounded-lg"
+                    href="{% url 'portfolio_list' %}">Works</a>
+                <a class="block text-base font-medium {% if active_page == 'blog-list' %} text-text-primary bg-gray-200 {% else %} text-text-secondary hover:text-text-primary {% endif %} transition-colors px-4 py-2 rounded-lg"
+                    href="{% url 'blog_list' %}">Blog</a>
+
+                {% if user.is_authenticated %}
+                <a class="block text-base font-medium text-text-secondary hover:text-text-primary transition-colors px-4 py-2 rounded-lg"
+                    href="{% url 'password_change' %}">パスワード変更</a>
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit"
+                        class="block w-full text-left text-base font-medium text-text-secondary hover:text-text-primary transition-colors px-4 py-2 rounded-lg">
+                        ログアウト
+                    </button>
+                </form>
+                {% else %}
+                <a class="block text-base font-medium text-text-secondary hover:text-text-primary transition-colors px-4 py-2 rounded-lg"
+                    href="{% url 'login' %}">Login</a>
+                {% endif %}
+            </nav>
         </header>
         {% endblock header %}
 
@@ -135,33 +159,39 @@
         </footer>
         {% endblock footer %}
     </div>
-
     <script>
         // HTMLが完全に読み込まれた後に、この中の処理を実行する
         document.addEventListener('DOMContentLoaded', () => {
 
-            // --- 1. 要素を取得する（名前とIDが一致しているか確認！） ---
+            // --- ドロップダウンメニュー用要素の取得 ---
             const menuButton = document.getElementById('user-menu-button');
             const userMenu = document.getElementById('user-menu');
             const dropdownArrow = document.getElementById('dropdown-arrow');
 
+            // --- ハンバーガーメニュー用要素の取得 ---
+            const menuToggleButton = document.getElementById('menu-toggle-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+
 
             // --- 2. ボタンにクリックされたときの動作を設定する ---
-            // menuButton がクリックされたら、(  )内の処理を実行する
-            menuButton.addEventListener('click', () => {
 
-                // --- 3. クラスを操作して表示・非表示を切り替える ---
+            // 💡 ユーザーメニュー（ドロップダウン）の処理 (既存)
+            if (menuButton && userMenu && dropdownArrow) {
+                menuButton.addEventListener('click', () => {
+                    userMenu.classList.toggle('hidden');
+                    dropdownArrow.classList.toggle('rotate-180');
+                });
+            }
 
-                // 💡 メニュー本体のクラス操作
-                // .toggle('hidden') は、
-                // hiddenクラスがあれば -> 削除（表示）
-                // hiddenクラスがなければ -> 追加（非表示） 
-                userMenu.classList.toggle('hidden');
+            // 💡 ハンバーガーメニューの処理 (新規)
+            if (menuToggleButton && mobileMenu) {
+                menuToggleButton.addEventListener('click', () => {
+                    // hiddenクラスをトグル（切り替え）して、メニューの表示/非表示を切り替える
+                    mobileMenu.classList.toggle('hidden');
 
-                // 💡 矢印アイコンのクラス操作
-                // .toggle('rotate-180') で、矢印を180度回転させる
-                dropdownArrow.classList.toggle('rotate-180');
-            });
+                    // 必要であれば、ハンバーガーアイコンを×印などに変える処理もここに追加できます
+                });
+            }
 
 
             // --- 💡 (おまけ) メニュー外をクリックしたら閉じる処理 ---
@@ -169,18 +199,29 @@
             // ページ全体でのクリックを監視
             document.addEventListener('click', (event) => {
 
-                // クリックされた要素がボタンでもメニュー内でもないか？
-                // かつ、メニューが開いている状態か？
-                const isClickedOutside = !menuButton.contains(event.target) && !userMenu.contains(event.target);
-                const isMenuOpen = !userMenu.classList.contains('hidden');
+                // --- ユーザーメニュー（ドロップダウン）の処理 (既存) ---
+                if (menuButton && userMenu && dropdownArrow) {
+                    const isClickedOutsideUserMenu = !menuButton.contains(event.target) && !userMenu.contains(event.target);
+                    const isUserMenuOpen = !userMenu.classList.contains('hidden');
 
-                if (isClickedOutside && isMenuOpen) {
-                    // メニューを閉じる（hiddenクラスを追加）
-                    userMenu.classList.add('hidden');
-
-                    // 矢印を元に戻す
-                    dropdownArrow.classList.remove('rotate-180');
+                    if (isClickedOutsideUserMenu && isUserMenuOpen) {
+                        userMenu.classList.add('hidden');
+                        dropdownArrow.classList.remove('rotate-180');
+                    }
                 }
+
+                // --- ハンバーガーメニューの処理 (新規) ---
+                if (menuToggleButton && mobileMenu) {
+                    const isClickedOutsideMobileMenu = !menuToggleButton.contains(event.target) && !mobileMenu.contains(event.target);
+                    const isMobileMenuOpen = !mobileMenu.classList.contains('hidden');
+
+                    if (isClickedOutsideMobileMenu && isMobileMenuOpen) {
+                        // メニューを閉じる（hiddenクラスを追加）
+                        mobileMenu.classList.add('hidden');
+                        // 必要であれば、アイコンを元に戻す処理もここに追加できます
+                    }
+                }
+
             });
 
         });
