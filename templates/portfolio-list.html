@@ -26,13 +26,32 @@
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       {% for item in object_list %}
-      <a class="group block bg-card-background border border-border-light rounded-xl overflow-hidden shadow-subtle hover:shadow-subtle-hover transition-all duration-300 ease-in-out transform hover:-translate-y-1"
-        href="{% url 'portfolio_detail' item.slug %}">
-        <div class="overflow-hidden aspect-video">
-          <img alt="E-commerce Platform Thumbnail"
+      <a class="bg-white rounded-xl shadow-md overflow-hidden group transition-all duration-300 hover:shadow-xl"
+        href="{% url 'portfolio_detail' item.slug %}" data-video-id="{{ item.video_id }}" data-title="{{ item.title }}">
+
+        <div class="overflow-hidden aspect-video video-player-area relative">
+
+          {% if item.video_id %}
+          <img alt="{{ item.title }} - Video Thumbnail"
+            class="video-thumbnail w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+            src="https://img.youtube.com/vi/{{ item.video_id }}/mqdefault.jpg" />
+
+          <div
+            class="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 transition-opacity duration-300 group-hover:opacity-100 pointer-events-none">
+            <span class="material-symbols-outlined text-white text-6xl">play_circle</span>
+          </div>
+
+          {% elif item.images.all.0 %}
+          <img alt="{{ item.title }} - Main Image"
             class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
             src="{{ item.images.all.0.image.url }}" />
+          {% else %}
+          <div class="w-full h-full flex items-center justify-center bg-gray-100 text-text-secondary">
+            サムネイル画像なし
+          </div>
+          {% endif %}
         </div>
+
         <div class="p-6">
           <h3 class="text-xl font-semibold text-text-primary">{{ item.title }}</h3>
           <p class="mt-2 text-text-secondary">{{ item.description|truncatechars:100 }}</p>
@@ -44,4 +63,74 @@
 </main>
 {% endblock content %}
 
-</html>
+
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // 【変更】動画IDを持つすべてのカード全体(a.group)を選択
+    const portfolioCards = document.querySelectorAll('a.group[data-video-id]');
+
+    portfolioCards.forEach(card => {
+        const videoId = card.dataset.videoId;
+        const videoTitle = card.dataset.title || 'YouTube video player';
+        
+        // 動画表示領域と静止画サムネイル要素を取得
+        const playerArea = card.querySelector('.video-player-area');
+        const thumbnail = card.querySelector('.video-thumbnail');
+        const overlay = card.querySelector('.video-overlay');
+
+        if (!playerArea || !videoId) return;
+
+        let iframeLoaded = false;
+        
+        // マウスオーバー時の処理
+        const loadVideo = () => {
+            // すでにiframeが読み込まれていれば何もしない
+            if (iframeLoaded) return; 
+
+            // YouTube埋め込みURL（autoplay=1, mute=1, loop=1を設定）
+            const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&modestbranding=1&controls=0&loop=1&playlist=${videoId}`;
+
+            const iframe = document.createElement('iframe');
+            iframe.className = 'w-full h-full object-cover absolute inset-0';
+            iframe.setAttribute('src', embedUrl);
+            iframe.setAttribute('frameborder', '0');
+            iframe.setAttribute('allow', 'autoplay; encrypted-media; gyroscope; picture-in-picture');
+            iframe.setAttribute('allowfullscreen', '');
+            iframe.setAttribute('title', videoTitle);
+
+            // 既存のコンテンツ（サムネイルとオーバーレイ）を非表示/削除
+            if (thumbnail) thumbnail.style.display = 'none';
+            if (overlay) overlay.style.display = 'none';
+            
+            // iframeを挿入
+            playerArea.appendChild(iframe);
+            iframeLoaded = true;
+        };
+
+        // マウスアウト時の処理
+        const unloadVideo = () => {
+            // iframeが読み込まれていなければ何もしない
+            if (!iframeLoaded) return;
+            
+            // 挿入されたiframeを削除
+            const iframe = playerArea.querySelector('iframe');
+            if (iframe) {
+                playerArea.removeChild(iframe);
+            }
+            
+            // 静的コンテンツを再表示
+            if (thumbnail) thumbnail.style.display = '';
+            if (overlay) overlay.style.display = '';
+
+            iframeLoaded = false;
+        };
+
+        // 【変更】イベントリスナーをカード全体(aタグ)に追加
+        card.addEventListener('mouseenter', loadVideo);
+        card.addEventListener('mouseleave', unloadVideo);
+    });
+});
+</script>
+{% endblock extra_js %}

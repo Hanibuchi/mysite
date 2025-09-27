@@ -6,3 +6,5 @@ mysiteenv/
 
 media/
 local_secrets.py 
+
+db.sqlite3

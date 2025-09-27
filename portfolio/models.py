@@ -38,6 +38,7 @@ class Portfolio(models.Model):
     description = models.TextField(verbose_name="概要")
     detailed_description = models.TextField(blank=True, verbose_name="詳細説明")
     video_url = models.URLField(max_length=200, blank=True, verbose_name="紹介動画URL")
+    video_id = models.CharField(max_length=20, blank=True, null=True, verbose_name="紹介動画ID")
     live_site_url = models.URLField(max_length=200, blank=True, verbose_name="公開先URL")
     
     technologies = models.ManyToManyField(
@@ -65,11 +66,43 @@ class Portfolio(models.Model):
 
     def __str__(self):
         return self.title
+    
+    def extract_youtube_video_id(self):
+        """
+        video_urlフィールドからYouTubeの動画IDを抽出します。
+        """
+        url = self.video_url
+        if not url:
+            return None
+        
+        # 一般的なYouTube URLパターン (watch?v=)
+        if 'watch?v=' in url:
+            try:
+                return url.split('watch?v=')[1].split('&')[0]
+            except IndexError:
+                return None
+        
+        # 短縮URLパターン (youtu.be/)
+        elif 'youtu.be/' in url:
+            try:
+                return url.split('youtu.be/')[1].split('?')[0]
+            except IndexError:
+                return None
+
+        # 埋め込みURLパターン (embed/) - 念のため
+        elif 'embed/' in url:
+            try:
+                return url.split('embed/')[1].split('?')[0]
+            except IndexError:
+                return None
+                
+        return None
 
     def save(self, *args, **kwargs):
         # スラッグが設定されていない場合、タイトルから自動生成する
         if not self.slug:
             self.slug = japanese_to_romaji(self.title)
+        self.video_id = self.extract_youtube_video_id()
         super().save(*args, **kwargs)
 
 class PortfolioImage(models.Model):
