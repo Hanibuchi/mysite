@@ -64,7 +64,7 @@
 
                     <div class="p-6">
                         <h3 class="text-xl font-semibold text-text-main mb-2">{{ item.title }}</h3>
-                        <p class="text-text-light">{{ item.description }}</p>
+                        <p class="text-text-light text-justify">{{ item.description|truncatechars:100 }}</p>
                     </div>
                 </a>
                 {% endfor %}
@@ -88,7 +88,7 @@
                         <p class="text-sm text-gray-500 mb-2">{{ item.updated_at|date:"F j, Y" }}</p>
                         <h3 class="text-xl font-semibold text-text-main mb-2">{{ item.title }}
                         </h3>
-                        <p class="text-text-light flex-grow">{{ item.content|truncatechars:100 }}</p>
+                        <p class="text-text-light flex-grow text-justify">{{ item.content|truncatechars:100 }}</p>
                     </div>
                 </a>
                 {% endfor %}
