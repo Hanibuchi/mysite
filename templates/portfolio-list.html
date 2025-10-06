@@ -21,8 +21,12 @@
 <main class="flex-grow">
   <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
     <div class="max-w-3xl mx-auto text-center mb-12 md:mb-16">
-      <h1 class="text-4xl font-bold tracking-tight text-text-primary sm:text-5xl lg:text-6xl">Works</h1>
-      <p class="mt-4 text-lg text-text-secondary">これまでに作った作品や取り組みをまとめています。気軽に覗いてみてください。</p>
+      <h1 class="text-4xl font-bold tracking-tight text-text-primary sm:text-5xl lg:text-6xl">
+        Works{% if tech %}: {{ tech.name }}{% endif %}
+      </h1>
+      <p class="mt-4 text-lg text-text-secondary">
+        これまでに作った作品や取り組みをまとめています。気軽に覗いてみてください。
+      </p>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       {% for item in object_list %}
@@ -59,6 +63,15 @@
       </a>
       {% endfor %}
     </div>
+
+    <div class="flex flex-wrap justify-center gap-3 my-10">
+      {% for stack in techstacks %}
+      <a href="{% url 'tech_portfolio_list' tech_slug=stack.slug %}"
+        class="inline-block px-4 py-2 rounded-full border border-text-secondary text-text-secondary hover:bg-primary-accent hover:text-white transition">
+        {{ stack.name }}
+      </a>
+      {% endfor %}
+    </div>
   </div>
 </main>
 {% endblock content %}
@@ -67,70 +80,70 @@
 
 {% block extra_js %}
 <script>
-document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('DOMContentLoaded', () => {
     // 【変更】動画IDを持つすべてのカード全体(a.group)を選択
     const portfolioCards = document.querySelectorAll('a.group[data-video-id]');
 
     portfolioCards.forEach(card => {
-        const videoId = card.dataset.videoId;
-        const videoTitle = card.dataset.title || 'YouTube video player';
-        
-        // 動画表示領域と静止画サムネイル要素を取得
-        const playerArea = card.querySelector('.video-player-area');
-        const thumbnail = card.querySelector('.video-thumbnail');
-        const overlay = card.querySelector('.video-overlay');
+      const videoId = card.dataset.videoId;
+      const videoTitle = card.dataset.title || 'YouTube video player';
 
-        if (!playerArea || !videoId) return;
+      // 動画表示領域と静止画サムネイル要素を取得
+      const playerArea = card.querySelector('.video-player-area');
+      const thumbnail = card.querySelector('.video-thumbnail');
+      const overlay = card.querySelector('.video-overlay');
 
-        let iframeLoaded = false;
-        
-        // マウスオーバー時の処理
-        const loadVideo = () => {
-            // すでにiframeが読み込まれていれば何もしない
-            if (iframeLoaded) return; 
+      if (!playerArea || !videoId) return;
 
-            // YouTube埋め込みURL（autoplay=1, mute=1, loop=1を設定）
-            const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&modestbranding=1&controls=0&loop=1&playlist=${videoId}`;
+      let iframeLoaded = false;
 
-            const iframe = document.createElement('iframe');
-            iframe.className = 'w-full h-full object-cover absolute inset-0';
-            iframe.setAttribute('src', embedUrl);
-            iframe.setAttribute('frameborder', '0');
-            iframe.setAttribute('allow', 'autoplay; encrypted-media; gyroscope; picture-in-picture');
-            iframe.setAttribute('allowfullscreen', '');
-            iframe.setAttribute('title', videoTitle);
+      // マウスオーバー時の処理
+      const loadVideo = () => {
+        // すでにiframeが読み込まれていれば何もしない
+        if (iframeLoaded) return;
 
-            // 既存のコンテンツ（サムネイルとオーバーレイ）を非表示/削除
-            if (thumbnail) thumbnail.style.display = 'none';
-            if (overlay) overlay.style.display = 'none';
-            
-            // iframeを挿入
-            playerArea.appendChild(iframe);
-            iframeLoaded = true;
-        };
+        // YouTube埋め込みURL（autoplay=1, mute=1, loop=1を設定）
+        const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&modestbranding=1&controls=0&loop=1&playlist=${videoId}`;
 
-        // マウスアウト時の処理
-        const unloadVideo = () => {
-            // iframeが読み込まれていなければ何もしない
-            if (!iframeLoaded) return;
-            
-            // 挿入されたiframeを削除
-            const iframe = playerArea.querySelector('iframe');
-            if (iframe) {
-                playerArea.removeChild(iframe);
-            }
-            
-            // 静的コンテンツを再表示
-            if (thumbnail) thumbnail.style.display = '';
-            if (overlay) overlay.style.display = '';
+        const iframe = document.createElement('iframe');
+        iframe.className = 'w-full h-full object-cover absolute inset-0';
+        iframe.setAttribute('src', embedUrl);
+        iframe.setAttribute('frameborder', '0');
+        iframe.setAttribute('allow', 'autoplay; encrypted-media; gyroscope; picture-in-picture');
+        iframe.setAttribute('allowfullscreen', '');
+        iframe.setAttribute('title', videoTitle);
 
-            iframeLoaded = false;
-        };
+        // 既存のコンテンツ（サムネイルとオーバーレイ）を非表示/削除
+        if (thumbnail) thumbnail.style.display = 'none';
+        if (overlay) overlay.style.display = 'none';
 
-        // 【変更】イベントリスナーをカード全体(aタグ)に追加
-        card.addEventListener('mouseenter', loadVideo);
-        card.addEventListener('mouseleave', unloadVideo);
+        // iframeを挿入
+        playerArea.appendChild(iframe);
+        iframeLoaded = true;
+      };
+
+      // マウスアウト時の処理
+      const unloadVideo = () => {
+        // iframeが読み込まれていなければ何もしない
+        if (!iframeLoaded) return;
+
+        // 挿入されたiframeを削除
+        const iframe = playerArea.querySelector('iframe');
+        if (iframe) {
+          playerArea.removeChild(iframe);
+        }
+
+        // 静的コンテンツを再表示
+        if (thumbnail) thumbnail.style.display = '';
+        if (overlay) overlay.style.display = '';
+
+        iframeLoaded = false;
+      };
+
+      // 【変更】イベントリスナーをカード全体(aタグ)に追加
+      card.addEventListener('mouseenter', loadVideo);
+      card.addEventListener('mouseleave', unloadVideo);
     });
-});
+  });
 </script>
 {% endblock extra_js %}
