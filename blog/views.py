@@ -12,6 +12,7 @@ class BlogList(ListView):
   def get_context_data(self, **kwargs):
     context = super().get_context_data(**kwargs)
     context['active_page'] = 'blog-list'
+    context['tags'] = Tag.objects.all()  # 追加
     return context
 
 class TagBlogList(ListView):
@@ -27,6 +28,7 @@ class TagBlogList(ListView):
     tag_slug = self.kwargs['tag_slug']
     context['tag'] = get_object_or_404(Tag, slug=tag_slug)
     context['active_page'] = 'blog-list'
+    context['tags'] = Tag.objects.all()  # 追加
     return context
   
 class BlogDetail(DetailView):

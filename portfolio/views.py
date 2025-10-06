@@ -33,8 +33,9 @@ class PortfolioList(ListView):
     # get_querysetでTechStackオブジェクトを取得・設定していることを想定
     if hasattr(self, 'current_tech'):
       context['tech'] = self.current_tech
-      
+
     context['active_page'] = 'portfolio-list'
+    context['techstacks'] = TechStack.objects.all()
     return context
   
 class PortfolioDetail(DetailView):
